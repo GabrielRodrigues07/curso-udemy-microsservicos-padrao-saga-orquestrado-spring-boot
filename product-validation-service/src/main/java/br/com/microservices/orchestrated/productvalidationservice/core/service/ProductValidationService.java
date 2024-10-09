@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import static br.com.microservices.orchestrated.productvalidationservice.core.enums.ESagaStatus.*;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Slf4j
@@ -44,10 +45,6 @@ public class ProductValidationService {
         kafkaProducer.sendEvent(jsonUtil.toJson(event));
     }
 
-    private void handleFailCurrentNotExecuted(Event event, String errorMessage) {
-
-    }
-
     private void addHistory(Event event, String message) {
         var history = History.builder()
                 .source(event.getSource())
@@ -61,7 +58,7 @@ public class ProductValidationService {
 
     private void handleSuccess(Event event) {
 
-        event.setStatus(ESagaStatus.SUCCESS);
+        event.setStatus(SUCCESS);
         event.setSource(CURRENT_SOURCE);
 
         addHistory(event, "Products are validated successfully!");
@@ -111,5 +108,34 @@ public class ProductValidationService {
         if (!productRepository.existsByCode(code)) {
             throw new ValidationException("Product does not exists in database");
         }
+    }
+
+    private void handleFailCurrentNotExecuted(Event event, String errorMessage) {
+
+        event.setStatus(ROLLBACK_PENDING);
+        event.setSource(CURRENT_SOURCE);
+
+        addHistory(event, "Fail to validate products: ".concat(errorMessage));
+    }
+
+    public void rollbackEvent(Event event) {
+        changeValidationToFail(event);
+
+        event.setStatus(FAIL);
+        event.setSource(CURRENT_SOURCE);
+
+        addHistory(event, "Rollback executed on product validation!");
+
+        kafkaProducer.sendEvent(jsonUtil.toJson(event));
+    }
+
+    private void changeValidationToFail(Event event) {
+        validationRepository
+                .findByOrderIdAndTransactionId(event.getOrderId(), event.getTransactionId())
+                .ifPresentOrElse(validation -> {
+                            validation.setSuccess(Boolean.FALSE);
+                            validationRepository.save(validation);
+                        },
+                        () -> createValidation(event, Boolean.FALSE));
     }
 }

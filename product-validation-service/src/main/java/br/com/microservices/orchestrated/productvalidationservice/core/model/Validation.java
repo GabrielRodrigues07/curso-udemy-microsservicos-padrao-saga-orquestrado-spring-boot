@@ -39,7 +39,6 @@ public class Validation {
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     @PrePersist
