@@ -36,6 +36,8 @@ public class InventoryService {
         try {
             checkCurrentValidation(event);
             createOrderInventory(event);
+            updateInventory(event.getPayload());
+            handleSuccess(event);
         } catch (Exception ex) {
             log.error("Error trying to update inventory: ", ex);
         }
@@ -74,6 +76,37 @@ public class InventoryService {
                 .build();
     }
 
+    private void updateInventory(Order order) {
+        order.getProducts().forEach(product -> {
+            var inventory = findInventoryByProductCode(product.getProduct().getCode());
+            checkInventory(inventory.getAvailable(), product.getQuantity());
+            inventory.setAvailable(inventory.getAvailable() - product.getQuantity());
+            inventoryRepository.save(inventory);
+        });
+    }
+
+    private void checkInventory(int available, int orderQuantity) {
+        if (orderQuantity > available) {
+            throw new ValidationException(String.format("Product is out of stock! Quantity available is %d and quantity actual is %d.", available, orderQuantity));
+        }
+    }
+
+    private void handleSuccess(Event event) {
+        event.setStatus(SUCCESS);
+        event.setSource(CURRENT_SOURCE);
+        addHistory(event, "Inventory updated successfully!");
+    }
+
+    private void addHistory(Event event, String message) {
+        var history = History
+                .builder()
+                .source(event.getSource())
+                .status(event.getStatus())
+                .message(message)
+                .createdAt(LocalDateTime.now())
+                .build();
+        event.addToHistory(history);
+    }
 
 
     private Inventory findInventoryByProductCode(String productCode) {
