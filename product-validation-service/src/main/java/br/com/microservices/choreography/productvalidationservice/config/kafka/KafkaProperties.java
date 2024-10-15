@@ -1,4 +1,4 @@
-package br.com.microservices.choreography.orderservice.config.kafka;
+package br.com.microservices.choreography.productvalidationservice.config.kafka;
 
 
 import lombok.Getter;
