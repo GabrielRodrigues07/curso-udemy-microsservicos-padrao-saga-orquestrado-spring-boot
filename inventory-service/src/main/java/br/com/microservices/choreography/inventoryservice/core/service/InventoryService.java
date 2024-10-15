@@ -1,11 +1,11 @@
 package br.com.microservices.choreography.inventoryservice.core.service;
 
 import br.com.microservices.choreography.inventoryservice.config.exception.ValidationException;
-import br.com.microservices.choreography.inventoryservice.core.model.Inventory;
 import br.com.microservices.choreography.inventoryservice.core.dto.Event;
 import br.com.microservices.choreography.inventoryservice.core.dto.History;
 import br.com.microservices.choreography.inventoryservice.core.dto.Order;
 import br.com.microservices.choreography.inventoryservice.core.dto.OrderProducts;
+import br.com.microservices.choreography.inventoryservice.core.model.Inventory;
 import br.com.microservices.choreography.inventoryservice.core.model.OrderInventory;
 import br.com.microservices.choreography.inventoryservice.core.producer.KafkaProducer;
 import br.com.microservices.choreography.inventoryservice.core.repository.InventoryRepository;

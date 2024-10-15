@@ -1,15 +1,15 @@
 package br.com.microservices.choreography.productvalidationservice.core.service;
 
+import br.com.microservices.choreography.productvalidationservice.config.exception.ValidationException;
+import br.com.microservices.choreography.productvalidationservice.core.dto.Event;
+import br.com.microservices.choreography.productvalidationservice.core.dto.History;
 import br.com.microservices.choreography.productvalidationservice.core.dto.OrderProducts;
 import br.com.microservices.choreography.productvalidationservice.core.enums.ESagaStatus;
 import br.com.microservices.choreography.productvalidationservice.core.model.Validation;
 import br.com.microservices.choreography.productvalidationservice.core.producer.KafkaProducer;
 import br.com.microservices.choreography.productvalidationservice.core.repository.ProductRepository;
-import br.com.microservices.choreography.productvalidationservice.core.utils.JsonUtil;
-import br.com.microservices.choreography.productvalidationservice.config.exception.ValidationException;
-import br.com.microservices.choreography.productvalidationservice.core.dto.Event;
-import br.com.microservices.choreography.productvalidationservice.core.dto.History;
 import br.com.microservices.choreography.productvalidationservice.core.repository.ValidationRepository;
+import br.com.microservices.choreography.productvalidationservice.core.utils.JsonUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

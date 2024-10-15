@@ -18,9 +18,9 @@ public class PaymentValidationConsumer {
 
     @KafkaListener(
             groupId = "${spring.kafka.consumer.group-id}",
-            topics = "${spring.kafka.topic.payment-success}")
+            topics = "${spring.kafka.topic.payment-start}")
     public void consumerSuccessEvent(String payload) {
-        log.info("Receiving success notification event {} from payment-success topic", payload);
+        log.info("Receiving success notification event {} from payment-start topic", payload);
 
         Event event = jsonUtil.toEvent(payload);
 

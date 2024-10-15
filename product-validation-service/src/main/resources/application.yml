@@ -8,7 +8,7 @@ spring:
     topic:
       product-validation-start: product-validation-start
       product-validation-fail: product-validation-fail
-      nofify-ending: nofify-ending
+      notify-ending: notify-ending
       payment-start: payment-start
 
     consumer:

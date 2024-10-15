@@ -1,14 +1,14 @@
 package br.com.microservices.choreography.paymentservice.core.service;
 
+import br.com.microservices.choreography.paymentservice.config.exception.ValidationException;
 import br.com.microservices.choreography.paymentservice.core.dto.Event;
 import br.com.microservices.choreography.paymentservice.core.dto.History;
 import br.com.microservices.choreography.paymentservice.core.dto.OrderProducts;
-import br.com.microservices.choreography.paymentservice.core.producer.KafkaProducer;
-import br.com.microservices.choreography.paymentservice.core.utils.JsonUtil;
-import br.com.microservices.choreography.paymentservice.config.exception.ValidationException;
 import br.com.microservices.choreography.paymentservice.core.enums.EPaymentStatus;
 import br.com.microservices.choreography.paymentservice.core.model.Payment;
+import br.com.microservices.choreography.paymentservice.core.producer.KafkaProducer;
 import br.com.microservices.choreography.paymentservice.core.repository.PaymentRepository;
+import br.com.microservices.choreography.paymentservice.core.utils.JsonUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
