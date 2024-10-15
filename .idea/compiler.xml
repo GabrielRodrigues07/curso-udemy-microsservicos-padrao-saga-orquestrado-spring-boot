@@ -11,5 +11,10 @@
         <module name="order-service.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="orchestrator-service" target="17" />
+      <module name="orchestrator-service.main" target="17" />
+      <module name="orchestrator-service.test" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

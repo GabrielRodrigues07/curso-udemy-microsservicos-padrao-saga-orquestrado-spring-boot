@@ -7,7 +7,7 @@ services:
     container_name: order-db
     restart: always
     networks:
-      - orchestrator-saga
+      - choreography-saga
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: 123456
@@ -26,7 +26,7 @@ services:
     #    tmpfs:
     #      size: 134217728 # 128*2^20 bytes = 128Mb
     networks:
-      - orchestrator-saga
+      - choreography-saga
     environment:
       POSTGRES_DB: product-db
       POSTGRES_USER: postgres
@@ -46,7 +46,7 @@ services:
     #    tmpfs:
     #      size: 134217728 # 128*2^20 bytes = 128Mb
     networks:
-      - orchestrator-saga
+      - choreography-saga
     environment:
       POSTGRES_DB: payment-db
       POSTGRES_USER: postgres
@@ -66,7 +66,7 @@ services:
     #    tmpfs:
     #      size: 134217728 # 128*2^20 bytes = 128Mb
     networks:
-      - orchestrator-saga
+      - choreography-saga
     environment:
       POSTGRES_DB: inventory-db
       POSTGRES_USER: postgres
@@ -82,7 +82,7 @@ services:
       - "2181:2181"
       - "9092:9092"
     networks:
-      - orchestrator-saga
+      - choreography-saga
     environment:
       KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
       KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
@@ -104,7 +104,7 @@ services:
     ports:
       - "8081:8080"
     networks:
-      - orchestrator-saga
+      - choreography-saga
     environment:
       CONFIG_FILEPATH: /tmp/config.yml
       CONSOLE_CONFIG_FILE: |
@@ -120,24 +120,12 @@ services:
       - order-db
       - kafka
     networks:
-      - orchestrator-saga
+      - choreography-saga
     environment:
       - KAFKA_BROKER=kafka:29092
       - MONGO_DB_URI=mongodb://admin:123456@order-db:27017
     ports:
       - 3000:3000
-
-  orchestrator-service:
-    build: './orchestrator-service'
-    container_name: orchestrator-service
-    depends_on:
-      - kafka
-    networks:
-      - orchestrator-saga
-    environment:
-      - KAFKA_BROKER=kafka:29092
-    ports:
-      - 8080:8080
 
   product-validation-service:
     build: './product-validation-service'
@@ -146,7 +134,7 @@ services:
       - product-db
       - kafka
     networks:
-      - orchestrator-saga
+      - choreography-saga
     environment:
       - KAFKA_BROKER=kafka:29092
       - DB_HOST=product-db
@@ -164,7 +152,7 @@ services:
       - payment-db
       - kafka
     networks:
-      - orchestrator-saga
+      - choreography-saga
     environment:
       - KAFKA_BROKER=kafka:29092
       - DB_HOST=payment-db
@@ -182,7 +170,7 @@ services:
       - inventory-db
       - kafka
     networks:
-      - orchestrator-saga
+      - choreography-saga
     environment:
       - KAFKA_BROKER=kafka:29092
       - DB_HOST=inventory-db
@@ -194,5 +182,5 @@ services:
       - 8092:8092
 
 networks:
-  orchestrator-saga:
+  choreography-saga:
     driver: bridge
