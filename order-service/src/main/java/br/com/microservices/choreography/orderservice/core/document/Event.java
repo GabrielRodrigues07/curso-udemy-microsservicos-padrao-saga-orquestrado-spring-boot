@@ -1,5 +1,6 @@
 package br.com.microservices.choreography.orderservice.core.document;
 
+import br.com.microservices.choreography.orderservice.core.enums.ESagaStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -13,7 +14,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,9 +33,18 @@ public class Event {
     private String orderId;
     private Order payload;
     private String source;
-    private String status;
+    private ESagaStatus status;
     private List<History> eventHistory;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createdAt;
+
+
+    public void addToHistory(History history) {
+        if (isEmpty(eventHistory)) {
+            eventHistory = new ArrayList<>();
+        }
+
+        eventHistory.add(history);
+    }
 }

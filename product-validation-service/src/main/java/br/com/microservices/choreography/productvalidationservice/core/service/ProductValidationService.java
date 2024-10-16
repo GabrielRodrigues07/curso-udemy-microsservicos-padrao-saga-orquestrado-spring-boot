@@ -41,7 +41,7 @@ public class ProductValidationService {
             handleFailCurrentNotExecuted(event, e.getMessage());
         }
 
-        kafkaProducer.sendEvent(jsonUtil.toJson(event));
+        kafkaProducer.sendEvent(jsonUtil.toJson(event), "test");
     }
 
     private void addHistory(Event event, String message) {
@@ -125,7 +125,7 @@ public class ProductValidationService {
 
         addHistory(event, "Rollback executed on product validation!");
 
-        kafkaProducer.sendEvent(jsonUtil.toJson(event));
+        kafkaProducer.sendEvent(jsonUtil.toJson(event), "test");
     }
 
     private void changeValidationToFail(Event event) {

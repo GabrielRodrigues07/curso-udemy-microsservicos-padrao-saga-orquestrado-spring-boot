@@ -1,5 +1,6 @@
 package br.com.microservices.choreography.orderservice.core.document;
 
+import br.com.microservices.choreography.orderservice.core.enums.ESagaStatus;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 public class History {
 
     private String source;
-    private String status;
+    private ESagaStatus status;
     private String message;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
