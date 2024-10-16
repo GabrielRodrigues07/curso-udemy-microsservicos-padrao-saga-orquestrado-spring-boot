@@ -7,10 +7,9 @@ import br.com.microservices.choreography.inventoryservice.core.dto.Order;
 import br.com.microservices.choreography.inventoryservice.core.dto.OrderProducts;
 import br.com.microservices.choreography.inventoryservice.core.model.Inventory;
 import br.com.microservices.choreography.inventoryservice.core.model.OrderInventory;
-import br.com.microservices.choreography.inventoryservice.core.producer.KafkaProducer;
 import br.com.microservices.choreography.inventoryservice.core.repository.InventoryRepository;
 import br.com.microservices.choreography.inventoryservice.core.repository.OrderInventoryRepository;
-import br.com.microservices.choreography.inventoryservice.core.utils.JsonUtil;
+import br.com.microservices.choreography.inventoryservice.core.saga.SagaExecutionController;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,8 +25,7 @@ public class InventoryService {
 
     private static final String CURRENT_SOURCE = "INVENTORY_SERVICE";
 
-    private final JsonUtil jsonUtil;
-    private final KafkaProducer kafkaProducer;
+    private final SagaExecutionController controller;
 
     private final InventoryRepository inventoryRepository;
     private final OrderInventoryRepository orderInventoryRepository;
@@ -42,7 +40,7 @@ public class InventoryService {
             log.error("Error trying to update inventory: ", ex);
             handleFailCurrentNotExecuted(event, ex.getMessage());
         }
-        kafkaProducer.sendEvent(jsonUtil.toJson(event), "test");
+        controller.handlerSaga(event);
     }
 
     private void checkCurrentValidation(Event event) {
@@ -124,7 +122,7 @@ public class InventoryService {
         } catch (Exception ex) {
             addHistory(event, "Rollback not executed for inventory: ".concat(ex.getMessage()));
         }
-        kafkaProducer.sendEvent(jsonUtil.toJson(event), "test");
+        controller.handlerSaga(event);
     }
 
     private void returnInventoryToPreviousValues(Event event) {

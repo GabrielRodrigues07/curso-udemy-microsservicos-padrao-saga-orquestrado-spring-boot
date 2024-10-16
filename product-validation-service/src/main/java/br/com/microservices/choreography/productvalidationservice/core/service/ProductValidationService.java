@@ -6,10 +6,9 @@ import br.com.microservices.choreography.productvalidationservice.core.dto.Histo
 import br.com.microservices.choreography.productvalidationservice.core.dto.OrderProducts;
 import br.com.microservices.choreography.productvalidationservice.core.enums.ESagaStatus;
 import br.com.microservices.choreography.productvalidationservice.core.model.Validation;
-import br.com.microservices.choreography.productvalidationservice.core.producer.KafkaProducer;
 import br.com.microservices.choreography.productvalidationservice.core.repository.ProductRepository;
 import br.com.microservices.choreography.productvalidationservice.core.repository.ValidationRepository;
-import br.com.microservices.choreography.productvalidationservice.core.utils.JsonUtil;
+import br.com.microservices.choreography.productvalidationservice.core.saga.SagaExecutionController;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,10 +24,9 @@ public class ProductValidationService {
 
     private static final String CURRENT_SOURCE = "PRODUCT_VALIDATION_SERVICE";
 
-    private final JsonUtil jsonUtil;
-    private final KafkaProducer kafkaProducer;
     private final ProductRepository productRepository;
     private final ValidationRepository validationRepository;
+    private final SagaExecutionController controller;
 
     public void validateExistingProduct(Event event) {
         try {
@@ -41,7 +39,7 @@ public class ProductValidationService {
             handleFailCurrentNotExecuted(event, e.getMessage());
         }
 
-        kafkaProducer.sendEvent(jsonUtil.toJson(event), "test");
+        controller.handlerSaga(event);
     }
 
     private void addHistory(Event event, String message) {
@@ -125,7 +123,7 @@ public class ProductValidationService {
 
         addHistory(event, "Rollback executed on product validation!");
 
-        kafkaProducer.sendEvent(jsonUtil.toJson(event), "test");
+        controller.handlerSaga(event);
     }
 
     private void changeValidationToFail(Event event) {
